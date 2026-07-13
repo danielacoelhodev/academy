@@ -34,8 +34,18 @@ jobs:
       with:
         image_name: my-java-app
 
-    - name: List docker images
-      run: docker image ls
-
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-   
+
+ build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: List docker images
+        run: docker image ls
