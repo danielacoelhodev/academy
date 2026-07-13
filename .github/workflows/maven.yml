@@ -31,9 +31,10 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Create a new docker image
-      run: | 
-        docker build . --file Dockerfile --tag academy:$(date +%s)
-        docker image ls
+      run: docker build . --file Dockerfile --tag academy:$(date +%s)
+
+    - name: List docker images
+      run: docker image ls
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
    
