@@ -30,7 +30,7 @@ jobs:
 
     - uses: ./.github/actions/maven_build
 
-    - uses: ./github/actions/docker_build
+    - uses: ./.github/actions/docker_build
 
     - name: List docker images
       run: docker image ls
