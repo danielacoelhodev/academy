@@ -14,6 +14,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  DOCKER_IMAGE_NAME: my-java-app
+  DOCKER_TAG_NAME: latest
+  ARTIFACT_NAME: my-artifact
+  ARTIFACT_PATH: ${{ env.DOCKER_IMAGE_NAME }}.tar
+
 jobs:
   build:
 
@@ -32,9 +38,16 @@ jobs:
 
     - uses: ./.github/actions/docker_build
       with:
-        image_name: my-java-app
+        image_name: ${{DOCKER_IMAGE_NAME}}
+        tag_name: ${{DOCKER_TAG_NAME}}
 
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    - name: Save Docker image to artifact
+      run: docker save -o ${{ env.DOCKER_IMAGE_NAME}}.tar ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_TAG_NAME }}
+
+    - uses: actions/upload-artifact@v7
+      with:
+        name: ${{env.ARTIFACT_NAME}}
+        path: ${{ env.ARTIFACT_PATH }}
 
   list-docker-images:
     needs: build
@@ -49,6 +62,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{env.ARTIFACT_NAME}}
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Docker load
+        run: docker load -i ${{env.DOCKER_IMAGE_NAME}}.tar
 
       - name: List docker images
         run: docker image ls
