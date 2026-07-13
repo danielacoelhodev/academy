@@ -31,6 +31,8 @@ jobs:
     - uses: ./.github/actions/maven_build
 
     - uses: ./.github/actions/docker_build
+      with:
+        image_name: my-java-app
 
     - name: List docker images
       run: docker image ls
